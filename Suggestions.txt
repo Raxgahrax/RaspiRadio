@@ -1,0 +1,14 @@
+1. Une fonction d'alarme.
+Je pense que la fonction primordiale qui manque au projet initial est une fonction réveil, concernant le réglage il faut se référer au montage que j'ai réalisé (réveil.png) mais je ne sais pas exactement comment cette donnée pourrait être enregistrer et vérifier toutes les minutes (peut être un cron) ; il serait également intéressant de lier la fonction « réveil » à l'une des stations enregistrées dans le listing (radio_playlist.sh) pour pouvoir être réveiler en musique (si par hasard le réveil fonctionne en wifi, l'interface wifi devra être activer par un script  10 minutes avant la sonnerie). L'icône d'alarme se trouvera en bas à droite de l'écran principal (celui affichant l'heure et la date): 0x0,0xe, 0x15,0x17,0x11,0xe, 0x0
+
+2. Éteindre le rétro-éclairage
+Pour des raisons d'économie d'énergie, il serait avantageux d'amorcer une désactivation programmée du rétro-éclairage de l'écran vers minuit et une réactivation vers 8 heures du matin ou plus tôt si la fonction de réveil a été activée.
+
+3. Affichage de l'heure et de la date par défaut
+Pour que le projet final ressemble à un « vrai » radio-réveil, il serait préférable d'afficher l'heure et la date par défaut sur l'écran. L'adresse IP pourra être affichée en suivant le menu des réglages. Dès le branchement électrique, l'heure et la date sera affichée par défaut et une mise à jour automatique sera réalisée à l'aide de la fonction « ntp ».
+
+4. Affichage de la température et de l'humidité.
+En utilisant le menu de base dans le script python (radio_new.py), il serait possible de voir la température et l'humidité dans la pièce à l'aide d'une sonde DHT 22 (température intérieur de la pièce ou extérieur si la sonde est branchée à une ralonge). Le bouton "gauche" aura pour fonction de revenir au menu des choix.
+
+5. Utilisation d'un module RTC
+Pour garder l'horloge à l'heure si une panne du réseau Internet devait se produire, il serait intéressant de synchroniser périodiquement l'heure Internet sur un module RTC (hwclock --systohc --localtime), puis de copier ces données dans le bios du raspberry (hwclock --hctosys).
