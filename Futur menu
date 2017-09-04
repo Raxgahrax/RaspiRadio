@@ -1,0 +1,9 @@
+   MENU_LIST = [
+      '1. Date\n & Horloge',
+      '2. Temparature &\n Humidité,
+      '3. Adresse IP & Uptime',
+      '4. Program. réveil',
+      '5. Auto Select\n Audio Output',
+      '6. Rechargement\n Playlist Radio',
+      '7. Extinction du\n Systeme !',
+      '8. Sortie\n']
