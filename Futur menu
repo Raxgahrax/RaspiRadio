@@ -7,3 +7,7 @@
       '6. Rechargement\n Playlist Radio',
       '7. Extinction du\n Systeme !',
       '8. Sortie\n']
+
+1. La fonction "2." permettras d'afficher la température et l'humidité de la sonde DHT22 pendant 30 secondes, même sans appui de la part de l'utilisateur sur l'un des boutons; il y aura un renvoi automatique à l'affichage par défaut c'est à dire la date et l'heure.
+2. La fonction "3." fonctionneras sur le même principe que la fonction "2." pour plus de simplicité, changement juste de 30 secondes à 10.
+3. La fonction "8." pourrait être également supprimer si le principe de temporisation est utilisé.
