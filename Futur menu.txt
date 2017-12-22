@@ -10,4 +10,12 @@
 
 1. La fonction "2." permettras d'afficher la température et l'humidité de la sonde DHT22 pendant 30 secondes, même sans appui de la part de l'utilisateur sur l'un des boutons; il y aura un renvoi automatique à l'affichage par défaut c'est à dire la date et l'heure.
 2. La fonction "3." fonctionneras sur le même principe que la fonction "2." pour plus de simplicité, changement juste de 30 secondes à 10.
+<<<<<<< HEAD:Futur menu.txt
 3. La fonction "8." pourrait être également supprimer si le principe de temporisation est utilisé.
+=======
+3. La fonction "8." pourrait être également supprimer si le principe de temporisation est utilisé.
+---
+1. The function "2." will allow you to display the temperature and humidity of the DHT22 probe for 30 seconds, even without the user pressing one of the buttons; there will be an automatic return to the default display, ie the date and time.
+2. The function "3." will work on the same principle as function "2." for simplicity, just change from 30 seconds to 10.
+3. The function "8." could also be deleted if the timing principle is used.
+>>>>>>> 5736d7802cbc2784793be3a88dace6305eff5188:Futur menu

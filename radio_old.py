@@ -2,7 +2,11 @@
 
 # radio.py, version 2.1 (RGB LCD Pi Plate version)
 # February 17, 2013
+<<<<<<< HEAD:radio_old.py
 # Edited by Raxgahrax (2016/2017)
+=======
+# Edited : Raxgahrax (2016/2017)
+>>>>>>> 5736d7802cbc2784793be3a88dace6305eff5188:radio_new.py
 # Written by Sheldon Hartling for Usual Panic
 # BSD license, all text above must be included in any redistribution
 #
