@@ -2,7 +2,7 @@
 
 # radio.py, version 2.1 (RGB LCD Pi Plate version)
 # February 17, 2013
-# Edited : Clu 701 (2016/2017)
+# Edited by Raxgahrax (2016/2017)
 # Written by Sheldon Hartling for Usual Panic
 # BSD license, all text above must be included in any redistribution
 #
@@ -15,7 +15,10 @@
 #
 
 #dependancies
+import time
+import RPi.GPIO as GPIO
 import Adafruit_CharLCD as LCD
+import Adafruit_GPIO.MCP230xx as MCP
 
 from time                  import sleep, strftime
 from Queue                 import Queue
@@ -23,13 +26,29 @@ from smbus                 import SMBus
 from datetime              import datetime
 from threading             import Thread
 from subprocess            import *
-from Adafruit_I2C          import Adafruit_I2C
-from Adafruit_MCP230xx     import Adafruit_MCP230XX
 
-# initialize the LCD plate using the pins
-#   use busnum = 0 for raspi version 1 (256MB) 
-#   and busnum = 1 for raspi version 2 (512MB)
-lcd = LCD.Adafruit_CharLCDPlate(busnum = 1)
+
+# Define MCP pins connected to the LCD.
+lcd_rs        = 0
+lcd_en        = 1
+lcd_d4        = 2
+lcd_d5        = 3
+lcd_d6        = 4
+lcd_d7        = 5
+lcd_red       = 6
+lcd_green     = 7
+lcd_blue      = 8
+
+# Define LCD column and row size for 16x2 LCD.
+lcd_columns = 16
+lcd_rows = 2
+
+# Initialize MCP23017 device using its default 0x20 I2C address.
+gpio = MCP.MCP23017()
+
+# Initialize the LCD using the pins
+lcd = LCD.Adafruit_RGBCharLCD(lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6, lcd_d7, lcd_columns, 
+                              lcd_rows, lcd_red, lcd_green, lcd_blue, gpio=gpio)
 
 # Define a queue to communicate with worker thread
 LCD_QUEUE = Queue()
@@ -38,18 +57,6 @@ LCD_QUEUE = Queue()
 PLAYLIST_MSG   = []
 STATION        = 1
 NUM_STATIONS   = 0
-
-# Buttons
-NONE           = 0x00
-SELECT         = 0x01
-RIGHT          = 0x02
-DOWN           = 0x04
-UP             = 0x08
-LEFT           = 0x10
-UP_AND_DOWN    = 0x0C
-LEFT_AND_RIGHT = 0x12
-
-
 
 # ----------------------------
 # WORKER THREAD
@@ -69,8 +76,6 @@ def update_lcd(q):
       q.task_done()
    return
 
-
-
 # ----------------------------
 # MAIN LOOP
 # ----------------------------
@@ -82,9 +87,8 @@ def main():
    output = run_cmd("mpc stop")
 
    # Setup AdaFruit LCD Plate
-   LCD.begin(16,2)
-   LCD.clear()
-   LCD.backlight(LCD.VIOLET)
+   lcd.clear()
+   lcd.set_color(1.0, 0.0, 1.0)
 
    # Create the worker thread and make it a daemon
    worker = Thread(target=update_lcd, args=(LCD_QUEUE,))
@@ -97,9 +101,7 @@ def main():
    # Load our station playlist
    load_playlist()
    sleep(2)
-   LCD.clear()
-
-
+   lcd.clear()
 
 # ----------------------------
 # START THE MUSIC!
@@ -156,7 +158,6 @@ def main():
       delay_milliseconds(99)
    update_lcd.join()
 
-
 # ----------------------------
 # READ SWITCHES
 # ----------------------------
@@ -176,8 +177,6 @@ def delay_milliseconds(milliseconds):
    seconds = milliseconds / float(1000)	# divide milliseconds by 1000 for seconds
    sleep(seconds)
 
-
-
 # ----------------------------
 # LOAD PLAYLIST OF STATIONS
 # ----------------------------
@@ -188,11 +187,11 @@ def load_playlist():
    # Run shell script to add all stations
    # to the MPC/MPD music player playlist
    output = run_cmd("mpc clear")
-   output = run_cmd("/home/pi/Desktop/WebRadio/radio_playlist.sh")
+   output = run_cmd("/home/pi/Desktop/RaspiRadio/playlist.sh")
 
    # Load PLAYLIST_MSG list
    PLAYLIST_MSG = []
-   with open ("/home/pi/Desktop/WebRadio/radio_playlist.sh", "r") as playlist:
+   with open ("/home/pi/Desktop/RaspiRadio/playlist.sh", "r") as playlist:
       # Skip leading hash-bang line
       for line in playlist:
          if line[0:1] != '#!':  
@@ -203,7 +202,6 @@ def load_playlist():
             PLAYLIST_MSG.append(line.replace(r'\n','\n')[1:-1] + "                ")
    playlist.close()
    NUM_STATIONS = len(PLAYLIST_MSG)
-
 
 # ----------------------------
 # RADIO SETUP MENU
@@ -222,8 +220,8 @@ def menu_pressed():
       '7. Sortie\n']
 
    item = 0
-   LCD.clear()
-   LCD.backlight(LCD.YELLOW)
+   lcd.clear()
+   lcd.set_color(1.0, 1.0, 0.0)
    LCD_QUEUE.put(MENU_LIST[item], True)
 
    keep_looping = True
@@ -277,14 +275,14 @@ def menu_pressed():
             LCD_QUEUE.join()
             output = run_cmd("mpc clear")
             output = run_cmd("sudo shutdown -h now")
-            LCD.clear()
-            LCD.backlight(LCD.OFF)
+            lcd.clear()
+            lcd.set_color(0.0, 0.0, 0.0)
             exit(0)
       else:
          delay_milliseconds(99)
 
    # Restore display
-   LCD.backlight(LCD.VIOLET)
+   lcd.set_color(1.0, 0.0, 1.0)
    LCD_QUEUE.put(PLAYLIST_MSG[STATION - 1], True)
 
 
@@ -300,7 +298,7 @@ def display_ipaddr():
    if ipaddr == "":
       ipaddr = run_cmd(show_wlan0)
 #Bleu azur profond
-   LCD.backlight(LCD.VIOLET)
+   lcd.set_color(0.0, 0.0, 1.0)
    i = 29
    muting = False
    keep_looping = True
